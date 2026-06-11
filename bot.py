@@ -12,6 +12,7 @@ try:
 
     response.raise_for_status()
 
+
     return response.text.strip()
 
 # remove trailing newline
@@ -19,3 +20,66 @@ try:
 except Exception as e:
 
     return f"Weather unavailable ({e})"
+def get_quote():
+
+    """Fetch a random motivational quote from ZenQuotes."""
+
+    url = "https://zenquotes.io/api/random"
+try:
+
+    response = requests.get(url, timeout=10) response.raise_for_status()
+
+    data = response.json()
+
+    quote = data[0]["q"]
+
+    author = data[0]["a"]
+    return f'"(quote)" - {author}'
+
+except Exception as e:
+    return f"Quote unavailable ({e})"
+def build_summary():
+
+    """Assemble the full daily summary from all data sources."""
+
+    today=date.today().strftime("%A, %d %B %Y")
+
+    weather = get_weather()
+
+    quote get_quote()
+
+    summary f"""
+=============================
+
+PULSE Daily Summary
+
+{today}
+=============================
+
+WEATHER
+    {weather}
+
+TODAY'S QUOTE
+    {quote}00
+=000============================
+"""
+
+return summary 
+def run():
+
+    """Main entry point. Called by Github Actions."""
+
+    summary build_summary()
+
+    print(summary) #shows in the Actions Log
+
+   #Save to a file (uploaded as a downloadable artifact)
+
+    with open("daily_summary.txt", "w", encoding="utf-8") as f:
+
+        f.write(summary)
+    print("Pulse ran successfully.")
+
+if_name_=="_main":
+    run()
+
